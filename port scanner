@@ -1,0 +1,62 @@
+import socket
+from colorama import Fore, Back, Style                                                                                                                    
+import pyfiglet
+
+banner1 = r"""
+  ██▓███   ▒█████   ██▀███  ▄▄▄█████▓     ██████  ▄████▄   ▄▄▄       ███▄    █  ███▄    █ ▓█████  ██▀███   
+ ▓██░  ██▒▒██▒  ██▒▓██ ▒ ██▒▓  ██▒ ▓▒   ▒██    ▒ ▒██▀ ▀█  ▒████▄     ██ ▀█   █  ██ ▀█   █ ▓█   ▀ ▓██ ▒ ██▒
+ ▓██░ ██▓▒▒██░  ██▒▓██ ░▄█ ▒▒ ▓██░ ▒░   ░ ▓██▄   ▒▓█    ▄ ▒██  ▀█▄  ▓██  ▀█ ██▒▓██  ▀█ ██▒▒███   ▓██ ░▄█ ▒
+ ▒██▄█▓▒ ▒▒██   ██░▒██▀▀█▄  ░ ▓██▓ ░      ▒   ██▒▒▓▓▄ ▄██▒░██▄▄▄▄██ ▓██▒  ▐▌██▒▓██▒  ▐▌██▒▒▓█  ▄ ▒██▀▀█▄  
+ ▒██▒ ░  ░░ ████▓▒░░██▓ ▒██▒  ▒██▒ ░    ▒██████▒▒▒ ▓███▀ ░ ▓█   ▓██▒▒██░   ▓██░▒██░   ▓██░░▒████▒░██▓ ▒██▒
+ ▒▓▒░ ░  ░░ ▒░▒░▒░ ░ ▒▓ ░▒▓░  ▒ ░░      ▒ ▒▓▒ ▒ ░░ ░▒ ▒  ░ ▒▒   ▓▒█░░ ▒░   ▒ ▒ ░ ▒░   ▒ ▒ ░░ ▒░ ░░ ▒▓ ░▒▓░
+ ░▒ ░       ░ ▒ ▒░   ░▒ ░ ▒░    ░       ░ ░▒  ░ ░  ░  ▒     ▒   ▒▒ ░░ ░░   ░ ▒░░ ░░   ░ ▒░ ░ ░  ░  ░▒ ░ ▒░
+ ░░       ░ ░ ░ ▒    ░░   ░   ░         ░  ░  ░  ░          ░   ▒      ░   ░ ░    ░   ░     ░░   ░  ░    ░
+              ░ ░     ░                       ░  ░ ░            ░  ░         ░          ░    ░  ░   ░     
+"""
+banner = pyfiglet.figlet_format("By Yugo")
+print(Fore.RED + banner1)
+print(banner)
+print("======================================================================================================")
+
+
+def scan_ports4(host, port):
+    print(f"Scanning the port {port} from {host}...")
+    sock4 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#ipv4
+    sock4.settimeout(0.5)  # tempo limite de resposta
+    result = sock4.connect_ex((host, port))
+    if result == 0:
+        print(f"Port {port} open form ipv4")
+        sock4.close()
+    else:
+        print(f"port {port} is closed")
+
+
+def scan_ports6(host,port):
+    print(f"Scanning the port {port} from {host}...")
+    sock6 = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)#ipv6
+    sock6.settimeout(0.5)  # tempo limite de resposta
+    result = sock6.connect_ex((host, port))
+    if result == 0:
+        print(f"Port {port} open form ipv6")
+        sock6.close()
+    else:
+        print(f"port {port} is closed")
+            
+
+url = input("Typing the URL:")
+port = int(input("port to be scanned:"))
+
+try:
+    infos = socket.getaddrinfo(url, None)
+    for info in infos:
+        family = info[0]
+        ip = info[4][0]
+        if family == socket.AF_INET:
+            print(f"{url} has IPv4: {ip}")
+            scan_ports4(url, port)
+        elif family == socket.AF_INET6:
+            print(f"{url} has IPv6: {ip}")
+            scan_ports6(url, port)
+finally:
+    print("done")           
+#quando o endereço tiver 2 ips fazer função prascolher qual vai querer escanear ip  v6 ou v4 
